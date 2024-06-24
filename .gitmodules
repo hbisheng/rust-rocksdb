@@ -1,7 +1,7 @@
 [submodule "rocksdb"]
 	path = librocksdb_sys/rocksdb
-	url = https://github.com/v01dstar/rocksdb.git
-	branch = 8.10-tikv
+	url = https://github.com/hbisheng/rocksdb.git
+	branch = tikv-cherry-pick
 
 [submodule "titan"]
 	path = librocksdb_sys/libtitan_sys/titan
