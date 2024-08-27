@@ -137,7 +137,7 @@ fn build_rocksdb() -> Build {
         println!("cargo:rustc-link-lib=static=jemalloc");
     }
     if cfg!(feature = "portable") {
-        cfg.define("PORTABLE", "ON");
+        cfg.define("PORTABLE", "haswell");
     }
     if cfg!(feature = "sse") {
         cfg.define("FORCE_SSE42", "ON");

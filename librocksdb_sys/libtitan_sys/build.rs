@@ -17,7 +17,7 @@ fn main() {
     let cur_dir = std::env::current_dir().unwrap();
     let mut cfg = cmake::Config::new("titan");
     if cfg!(feature = "portable") {
-        cfg.define("PORTABLE", "ON");
+        cfg.define("PORTABLE", "haswell");
     }
     if cfg!(feature = "sse") {
         cfg.define("FORCE_SSE42", "ON");
