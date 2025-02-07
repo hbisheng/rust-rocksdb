@@ -1,4 +1,3 @@
-extern crate test;
 
 extern crate crc;
 extern crate rand;
