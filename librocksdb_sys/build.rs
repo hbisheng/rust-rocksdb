@@ -73,8 +73,15 @@ fn main() {
     println!("cargo:rerun-if-env-changed=UPDATE_BIND");
 
     let mut build = build_rocksdb();
+    build.cpp(true)
+        .file("crocksdb/c.cc")
+        .flag_if_supported("-fPIC");  // Add this
 
-    build.cpp(true).file("crocksdb/c.cc");
+    let target = env::var("TARGET").expect("TARGET was not set");
+    
+    println!("cargo:rustc-link-arg=-Wl,--no-relax");  // Add this
+    build.flag("-mcmodel=large");  // Optional
+    
     if env::var("CARGO_CFG_TARGET_OS").unwrap() != "windows" {
         build.flag("-std=c++17");
         build.flag("-fno-rtti");
