@@ -129,6 +129,13 @@ fn build_rocksdb() -> Build {
     let target = env::var("TARGET").expect("TARGET was not set");
     let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap();
     let mut cfg = Config::new("rocksdb");
+
+    cfg.define("Threads_FOUND", "1")
+       .define("Threads_PREFER_PTHREAD_FLAG", "ON")
+       .define("CMAKE_THREAD_LIBS_INIT", "-lpthread")
+       .define("PTHREAD_LIBRARY", "/usr/lib64/libpthread.so")
+       .define("PTHREAD_INCLUDE_DIR", "/usr/include");
+
     if cfg!(feature = "encryption") {
         cfg.register_dep("OPENSSL").define("WITH_OPENSSL", "ON");
     }
