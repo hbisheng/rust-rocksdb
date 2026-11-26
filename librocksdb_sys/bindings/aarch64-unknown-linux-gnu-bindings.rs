@@ -4105,12 +4105,14 @@ pub struct ctitandb_blob_index_t {
     pub file_number: u64,
     pub blob_offset: u64,
     pub blob_size: u64,
+    pub raw_value_size: u64,
+    pub has_raw_value_size: libc::c_uchar,
 }
 #[test]
 fn bindgen_test_layout_ctitandb_blob_index_t() {
     assert_eq!(
         ::std::mem::size_of::<ctitandb_blob_index_t>(),
-        24usize,
+        40usize,
         concat!("Size of: ", stringify!(ctitandb_blob_index_t))
     );
     assert_eq!(
@@ -4151,6 +4153,16 @@ fn bindgen_test_layout_ctitandb_blob_index_t() {
             "::",
             stringify!(blob_size)
         )
+    );
+    let value = ::std::mem::MaybeUninit::<ctitandb_blob_index_t>::uninit();
+    let ptr = value.as_ptr();
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).raw_value_size) as usize - ptr as usize },
+        24usize
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).has_raw_value_size) as usize - ptr as usize },
+        32usize
     );
 }
 #[repr(C)]
@@ -4211,6 +4223,15 @@ extern "C" {
 }
 extern "C" {
     pub fn ctitandb_options_set_min_blob_size(arg1: *mut ctitandb_options_t, size: u64);
+}
+extern "C" {
+    pub fn ctitandb_options_set_enable_blob_index_raw_size(
+        arg1: *mut ctitandb_options_t,
+        enable: libc::c_uchar,
+    );
+    pub fn ctitandb_options_enable_blob_index_raw_size(
+        arg1: *mut ctitandb_options_t,
+    ) -> libc::c_uchar;
 }
 extern "C" {
     pub fn ctitandb_options_blob_file_compression(arg1: *mut ctitandb_options_t) -> libc::c_int;

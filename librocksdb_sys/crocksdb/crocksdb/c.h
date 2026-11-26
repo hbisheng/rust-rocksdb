@@ -2676,6 +2676,8 @@ struct ctitandb_blob_index_t {
   uint64_t file_number;
   uint64_t blob_offset;
   uint64_t blob_size;
+  uint64_t raw_value_size;
+  unsigned char has_raw_value_size;
 };
 
 typedef struct ctitandb_options_t ctitandb_options_t;
@@ -2734,6 +2736,12 @@ ctitandb_options_min_blob_size(ctitandb_options_t*);
 
 extern C_ROCKSDB_LIBRARY_API void ctitandb_options_set_min_blob_size(
     ctitandb_options_t*, uint64_t size);
+
+extern C_ROCKSDB_LIBRARY_API void
+ctitandb_options_set_enable_blob_index_raw_size(ctitandb_options_t*,
+                                                unsigned char enable);
+extern C_ROCKSDB_LIBRARY_API unsigned char
+ctitandb_options_enable_blob_index_raw_size(ctitandb_options_t*);
 
 extern C_ROCKSDB_LIBRARY_API int ctitandb_options_blob_file_compression(
     ctitandb_options_t*);

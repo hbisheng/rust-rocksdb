@@ -6866,6 +6866,16 @@ void ctitandb_options_set_min_blob_size(ctitandb_options_t* opts,
   opts->rep.min_blob_size = size;
 }
 
+void ctitandb_options_set_enable_blob_index_raw_size(ctitandb_options_t* opts,
+                                                     unsigned char enable) {
+  opts->rep.enable_blob_index_raw_size = enable;
+}
+
+unsigned char ctitandb_options_enable_blob_index_raw_size(
+    ctitandb_options_t* opts) {
+  return opts->rep.enable_blob_index_raw_size;
+}
+
 int ctitandb_options_blob_file_compression(ctitandb_options_t* opts) {
   return opts->rep.blob_file_compression;
 }
@@ -6891,12 +6901,14 @@ void ctitandb_decode_blob_index(const char* value, size_t value_size,
                                 ctitandb_blob_index_t* index, char** errptr) {
   Slice v(value, value_size);
   BlobIndex bi;
-  if (SaveError(errptr, bi.DecodeFrom(&v))) {
+  if (SaveError(errptr, rocksdb::titandb::DecodeInto(v, &bi))) {
     return;
   }
   index->file_number = bi.file_number;
   index->blob_offset = bi.blob_handle.offset;
   index->blob_size = bi.blob_handle.size;
+  index->has_raw_value_size = bi.has_raw_value_size;
+  index->raw_value_size = bi.raw_value_size;
 }
 
 void ctitandb_encode_blob_index(const ctitandb_blob_index_t* index,
@@ -6905,6 +6917,8 @@ void ctitandb_encode_blob_index(const ctitandb_blob_index_t* index,
   bi.file_number = index->file_number;
   bi.blob_handle.offset = index->blob_offset;
   bi.blob_handle.size = index->blob_size;
+  bi.has_raw_value_size = index->has_raw_value_size;
+  bi.raw_value_size = index->raw_value_size;
   std::string result;
   bi.EncodeTo(&result);
   *value = CopyString(result);

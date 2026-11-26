@@ -220,6 +220,8 @@ pub struct DBTitanBlobIndex {
     pub file_number: u64,
     pub blob_offset: u64,
     pub blob_size: u64,
+    pub raw_value_size: u64,
+    pub has_raw_value_size: bool,
 }
 
 pub fn new_bloom_filter(bits: c_double) -> *mut DBFilterPolicy {
@@ -2940,6 +2942,11 @@ extern "C" {
     pub fn ctitandb_options_set_dirname(opts: *mut DBTitanDBOptions, name: *const c_char);
     pub fn ctitandb_options_min_blob_size(opts: *mut DBTitanDBOptions) -> u64;
     pub fn ctitandb_options_set_min_blob_size(opts: *mut DBTitanDBOptions, size: u64);
+    pub fn ctitandb_options_set_enable_blob_index_raw_size(
+        opts: *mut DBTitanDBOptions,
+        enable: bool,
+    );
+    pub fn ctitandb_options_enable_blob_index_raw_size(opts: *mut DBTitanDBOptions) -> bool;
     pub fn ctitandb_options_blob_file_compression(opts: *mut DBTitanDBOptions)
         -> DBCompressionType;
     pub fn ctitandb_options_set_blob_file_compression(

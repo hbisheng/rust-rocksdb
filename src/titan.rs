@@ -47,6 +47,19 @@ impl TitanDBOptions {
         }
     }
 
+    /// Enables version 2 blob indices and backfills legacy indices during SST
+    /// construction. Requires reopening the DB. Existing version 2 indices
+    /// prevent downgrade to older readers even after this option is disabled.
+    pub fn set_enable_blob_index_raw_size(&mut self, enable: bool) {
+        unsafe {
+            crocksdb_ffi::ctitandb_options_set_enable_blob_index_raw_size(self.inner, enable);
+        }
+    }
+
+    pub fn enable_blob_index_raw_size(&self) -> bool {
+        unsafe { crocksdb_ffi::ctitandb_options_enable_blob_index_raw_size(self.inner) }
+    }
+
     pub fn blob_file_compression(&self) -> DBCompressionType {
         unsafe { crocksdb_ffi::ctitandb_options_blob_file_compression(self.inner) }
     }
@@ -199,5 +212,36 @@ impl Deref for TitanBlobIndex {
 impl DerefMut for TitanBlobIndex {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.inner
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_blob_index_raw_size() {
+        let mut options = TitanDBOptions::new();
+        assert!(!options.enable_blob_index_raw_size());
+        options.set_enable_blob_index_raw_size(true);
+        assert!(options.enable_blob_index_raw_size());
+        let legacy = [1, 1, 2, 3];
+        let mut index = TitanBlobIndex::decode(&legacy).unwrap();
+        assert!(!index.has_raw_value_size);
+        assert_eq!(index.encode(), legacy);
+        for size in [0, 1, 1_000_000, u64::MAX] {
+            index.has_raw_value_size = true;
+            index.raw_value_size = size;
+            let encoded = index.encode();
+            let decoded = TitanBlobIndex::decode(&encoded).unwrap();
+            assert!(decoded.has_raw_value_size);
+            assert_eq!(decoded.raw_value_size, size);
+            assert_eq!(decoded.file_number, 1);
+            assert_eq!(decoded.blob_offset, 2);
+            assert_eq!(decoded.blob_size, 3);
+            assert!(TitanBlobIndex::decode(&encoded[..encoded.len() - 1]).is_err());
+        }
+        assert!(TitanBlobIndex::decode(&[3, 1, 2, 3]).is_err());
+        assert!(TitanBlobIndex::decode(&[1, 1, 2, 3, 0]).is_err());
     }
 }
