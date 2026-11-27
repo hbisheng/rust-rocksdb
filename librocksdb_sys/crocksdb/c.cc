@@ -60,6 +60,7 @@
 #include "table/block_based/block_based_table_factory.h"
 #include "table/sst_file_writer_collectors.h"
 #include "table/table_reader.h"
+#include "titan/blob_raw_size.h"
 #include "titan/checkpoint.h"
 #include "titan/db.h"
 #include "titan/options.h"
@@ -6859,6 +6860,15 @@ void ctitandb_options_set_dirname(ctitandb_options_t* opts, const char* name) {
 
 uint64_t ctitandb_options_min_blob_size(ctitandb_options_t* opts) {
   return opts->rep.min_blob_size;
+}
+
+bool ctitandb_current_blob_raw_size(uint64_t* size) {
+  return rocksdb::titandb::GetCurrentBlobRawSize(size);
+}
+
+void ctitandb_options_set_blob_raw_size_properties(ctitandb_options_t* opts,
+                                                   bool enabled) {
+  opts->rep.enable_blob_raw_size_properties = enabled;
 }
 
 void ctitandb_options_set_min_blob_size(ctitandb_options_t* opts,

@@ -41,6 +41,11 @@ impl TitanDBOptions {
         unsafe { crocksdb_ffi::ctitandb_options_min_blob_size(self.inner) }
     }
 
+    /// Store raw value lengths in SST properties without changing BlobIndex or WAL.
+    pub fn set_blob_raw_size_properties(&mut self, enabled: bool) {
+        unsafe { crocksdb_ffi::ctitandb_options_set_blob_raw_size_properties(self.inner, enabled) }
+    }
+
     pub fn set_min_blob_size(&mut self, size: u64) {
         unsafe {
             crocksdb_ffi::ctitandb_options_set_min_blob_size(self.inner, size);
@@ -164,6 +169,14 @@ pub struct TitanBlobIndex {
 }
 
 impl TitanBlobIndex {
+    /// Raw size of the current entry, valid only during a Titan collector callback.
+    /// `Some(u64::MAX)` means unknown (e.g. an obsolete, reclaimed blob).
+    /// `None` means the builder does not provide raw sizes.
+    pub fn current_raw_size() -> Option<u64> {
+        let mut size = 0;
+        unsafe { crocksdb_ffi::ctitandb_current_blob_raw_size(&mut size) }.then_some(size)
+    }
+
     pub fn decode(value: &[u8]) -> Result<Self, String> {
         let mut index = Self::default();
         unsafe {

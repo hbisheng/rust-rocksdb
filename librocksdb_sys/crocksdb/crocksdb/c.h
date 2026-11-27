@@ -2732,6 +2732,10 @@ extern C_ROCKSDB_LIBRARY_API void ctitandb_options_set_dirname(
 extern C_ROCKSDB_LIBRARY_API uint64_t
 ctitandb_options_min_blob_size(ctitandb_options_t*);
 
+extern C_ROCKSDB_LIBRARY_API bool ctitandb_current_blob_raw_size(
+    uint64_t* size);
+extern C_ROCKSDB_LIBRARY_API void ctitandb_options_set_blob_raw_size_properties(
+    ctitandb_options_t* opts, bool enabled);
 extern C_ROCKSDB_LIBRARY_API void ctitandb_options_set_min_blob_size(
     ctitandb_options_t*, uint64_t size);
 

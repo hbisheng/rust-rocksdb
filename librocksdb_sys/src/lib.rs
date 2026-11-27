@@ -2939,6 +2939,11 @@ extern "C" {
     pub fn ctitandb_options_dirname(opts: *mut DBTitanDBOptions) -> *const c_char;
     pub fn ctitandb_options_set_dirname(opts: *mut DBTitanDBOptions, name: *const c_char);
     pub fn ctitandb_options_min_blob_size(opts: *mut DBTitanDBOptions) -> u64;
+    pub fn ctitandb_current_blob_raw_size(size: *mut u64) -> bool;
+    pub fn ctitandb_options_set_blob_raw_size_properties(
+        opts: *mut DBTitanDBOptions,
+        enabled: bool,
+    );
     pub fn ctitandb_options_set_min_blob_size(opts: *mut DBTitanDBOptions, size: u64);
     pub fn ctitandb_options_blob_file_compression(opts: *mut DBTitanDBOptions)
         -> DBCompressionType;
