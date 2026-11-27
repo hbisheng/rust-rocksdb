@@ -1,9 +1,9 @@
 [submodule "rocksdb"]
 	path = librocksdb_sys/rocksdb
 	url = https://github.com/hbisheng/rocksdb.git
-	branch = bh-titan-raw-size-properties
+	branch = bh-titan-raw-size-addressed
 
 [submodule "titan"]
 	path = librocksdb_sys/libtitan_sys/titan
 	url = https://github.com/hbisheng/titan.git
-	branch = bh-titan-raw-size-properties
+	branch = bh-titan-raw-size-addressed
